@@ -1,97 +1,30 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-	<meta charset="utf-8">
-	<title>Show elvation along the route</title>
-	<style type="text/css">
-		html{
-			height: 100%;
-		}
-		body{
-			margin: 0 auto;
-			width: 100%;
-			height: 100%;
-		}
-		/*
-		h2{
-			width: 80%;
-			margin: 0 auto;
-		}
-		*/
-		#tbox{
-			width : 80%;
-			height: 5%;
-			margin: 10px auto;
-		}
-		#origin{
-			width: 35%;
-			height: 80%;
-			margin: 0 auto;
-		}
-		#destination{
-			width : 35%;
-			height: 80%;
-			margin: 0 auto;
-		}
-		button {
-			width : 10%;
-			height: 100%;
-			margin: 0 auto;
-		}
-		#graph{
-			width: 70%;
-			height: 30%;
-			margin: 20px auto;
-			border: thin dashed #000000
-		}
-		#map{
-			width: 70%;
-			height: 40%;
-			padding-top: 50px;
-			margin: 0 auto;
-		}
-	</style>
-</head>
-<body>
-<!--<h2> GMaps.js — Elevation along the path </h2>-->
-	<div id="tbox">
-		出発地:<input type="text", id="origin", value="東京駅", size="30", maxlength="60">
-		目的地:<input type="text", id="destination", value="新宿駅", size="30", maxlength="60">
-		<button onclick="main();">高低差を検索</button>
-	</div>
-	<div id="map"></div>
-	<!--- <canvas id="graph"></canvas> --->
-	<div id="graph"></div>
-	<script src="http://maps.google.com/maps/api/js?key=AIzaSyANAsTiwiVnZn6eU6d4zc3wp9Kfyc3D5X8"></script>
-	<script src="./gmaps.js"></script>
-	<script src="./d3/d3.js"></script>
-	<script src="./c3/c3.js"></script>
-	<link href="./c3/c3.css" rel="stylesheet" type="text/css">
-	<script src="./amcharts/amcharts.js"></script>
-	<script src="./amcharts/serial.js"></script>
-	<script src="./script.js"></script>
-	<!--shinobi1-->
-	<script type="text/javascript" src="http://x4.ohuda.com/ufo/071845200"></script>
-	<noscript>
-		<a href="http://x4.ohuda.com/bin/gg?071845200" target="_blank"><img src="http://x4.ohuda.com/bin/ll?071845200" border="0"></a><br>
-		<span style="font-size:9px"><img style="margin:0;vertical-align:text-bottom;" src="http://img.shinobi.jp/tadaima/fj.gif" width="19" height="11"> </span>
-	</noscript>
-	<!--shinobi2-->
-</body>
-</html>
+    <head>
+        <meta charset="utf-8">
+        <title>Show elvation along the route</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    </head>
+    <body>
+        <div id="title_area"></div>
+        <div id="print_area">
+            <div id="map"></div>
+            <div id="graph"></div>
+        </div>
+        <div id="input_area">
+            出発地点
+            <input type="text", id="origin", value="東京駅", size="30", maxlength="60">
+            <br>
+            目的地点
+            <input type="text", id="destination", value="新宿駅", size="30", maxlength="60">
+            <br>
+            <button onclick="main();">高低差を検索</button>
+        </div>
+        <div class="align_clear"></div>
 
-<!--
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="utf-8">
-	<title>Using Google Maps API</title>
-	<script src="http://maps.googleapis.com/maps/api/js?key={AIzaSyBkgMLqOCyGUsUFqNgEh3c5VYs51my8ezM}"></script>
-	<script src="gmaps/gmaps.js"></script>
-</head>
-<body>
-	<div id="map-canvas" style="width:100%;height:80%"></div>
-	<script src="hello.js"></script>
-</body>
+        <script src="http://maps.google.com/maps/api/js?key=AIzaSyANAsTiwiVnZn6eU6d4zc3wp9Kfyc3D5X8"></script>
+        <script src="./gmaps.js"></script>
+        <script src="./script.js"></script>
+    </body>
 </html>
--->
