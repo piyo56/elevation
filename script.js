@@ -174,9 +174,24 @@ function plotElevation(gmap_results){
     //描画
     var data = [route1];
     var layout = {
+        xaxis: {
+            zeroline: false, 
+            range: [-1, elevations.length+1],
+            title: "位置 (出発地から目的地)",
+            gridcolor: "#FFFFFF", 
+            nticks: 5, 
+            showgrid: true,
+        },
+        yaxis: {
+            zeroline: false,
+            title: "標高 [m]",
+            gridcolor: "#FFFFFF", 
+            nticks: 5, 
+            showgrid: true,
+        },
         hovermode:'closest',
-        xaxis: {zeroline: false, title: "位置 (出発地から目的地)"},
-        yaxis: {zeroline: false, title: "標高 [m]"},
+        plot_bgcolor: "#EFECEA", 
+        showlegend: false, 
         margin: { l: 40, b: 40, r:10, t:10 }
     };
     Plotly.newPlot($("#graph")[0], data, layout);
