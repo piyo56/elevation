@@ -8,8 +8,12 @@
 //window.addEventListener("load", init(), false);
 $(waitForEvent);
 function waitForEvent(){
+    //test
+    //var tmp_data = [{"elevation":10}, {"elevation":20}, {"elevation":30}];
+    //plotElevation(tmp_data);
+    //return;
     init();
-    //$(ターゲット).click()でなく$(document).on()をうまくいく
+
     $(document).on("click", "#search_button",  function(){
         main();
     });
@@ -146,26 +150,36 @@ function getElevation(path, _callback){
 //--------------------------------------
 function plotElevation(gmap_results){
     console.log("plotElevation()");
+    console.log(gmap_results);
 
     //描画フォーマットに合わせた標高の配列をつくる
-    var elevations = [{"x":[], "y":[]}];
+    var x_data = [];
+    var elevations = [];
     for (var i=0 ; i<gmap_results.length; i++){
-        elevations[0]["x"].push(i);
-        elevations[0]["y"].push(gmap_results[i].elevation);
+        x_data.push(i);
+        elevations.push(gmap_results[i]["elevation"]);
     }
+    console.log(x_data);
+    console.log(elevations);
+    route1 = {
+        type: 'scatter',
+        x: x_data,
+        y: elevations,
+        mode: 'lines',
+        line: {
+            color: 'green',
+            width: 1.5
+        },
+    };
 
     //描画
-    TESTER = document.getElementById('graph');
-    Plotly.plot( TESTER, elevations, {
-        //margin: { t: 0 }
-    });
-
-    /*
-    elevations.push({ "place":origin["place"],
-                      "value":results[0].elevation });
-    elevations.push({ "place": destination["place"],
-                      "value": results[i].elevation});
-    */
+    var data = [route1];
+    var layout = {
+        xaxis: {title: "位置 (出発地から目的地)"},
+        yaxis: {title: "標高 [m]"},
+        margin: { l: 40, b: 40, r:10, t:10 }
+    };
+    Plotly.plot($("#graph")[0], data, layout);
 }
 
 //-----------------------------------------------
