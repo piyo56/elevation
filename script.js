@@ -5,20 +5,13 @@
    destination : 目的地の情報
 */
 
-//window.addEventListener("load", init(), false);
-$(waitForEvent);
-
-function waitForEvent(){
-    //[test]
-    //var tmp_data = [{"elevation":10}, {"elevation":20}, {"elevation":30}];
-    //plotElevation(tmp_data);
-    //return;
+$(document).ready(function() {
     init();
+});
+$(document).on("click", "#search_button",  function(){
+    main();
+});
 
-    $(document).on("click", "#search_button",  function(){
-        main();
-    });
-};
 //-----------------------------------------------
 // 初期化関数
 // # ウィンドウがロードされた時に走る
@@ -48,16 +41,15 @@ function geocode(place, _callback){
             region: "jp",
             address: place,
             callback: function(results, status) {
-                if (status == 'OK') {
-                    var latlng = results[0].geometry.location;
-                    var lat = latlng.lat();
-                    var lng = latlng.lng();
-                    //console.log("local variable");
-                    //console.log([lat, lng]);
-                    _callback([lat, lng]);
-                } else {
-                    console.log("Geocode got Error. Status => " + status);
+                if (status !== void 0 && status !== 'OK') {
+                    alert(place + "の住所が取得できませんでした. Status =>" + status +")");
                 }
+                var latlng = results[0].geometry.location;
+                var lat = latlng.lat();
+                var lng = latlng.lng();
+                //console.log("local variable");
+                //console.log([lat, lng]);
+                _callback([lat, lng]);
             }
         });
 }
@@ -73,20 +65,27 @@ function getRoute(_callback){
         origin["latlng"] = results;
         geocode(destination["place"], function(results){
             destination["latlng"] = results;
-            //console.log(origin["latlng"], destination["latlng"]);
             //ルートを取得
-            map.getRoutes( {
+            map.getRoutes({
                 origin:      origin["latlng"],
                 destination: destination["latlng"],
-                callback: function(results){
-                    var pathObject = results[0].overview_path
-                        var path = []
-                        console.log(results)
-                        console.log("path (lat) test");
-                    console.log(origin["place"]+"->"+destination["place"])
-                        console.log(pathObject[0].lat());
-                    console.log(pathObject[1].lat());
-                    console.log(pathObject[2].lat());
+                callback: function(results, status){
+                    if (status !== void 0 && status !== 'OK') {
+                        alert("ルートの取得に失敗しました。(Status:" + status + ")");
+                        return;
+                    }
+                    console.log(results);
+                    var pathObject = results[results.length-1].overview_path;
+                    var path = [];
+
+                    console.log(origin["place"]+" -> "+destination["place"]);
+                    console.info("latlng of org: ", origin["latlng"]);
+                    console.info("latlng of dest: ", destination["latlng"]);
+                    console.info("path(lat):");
+                    for (var i=0; i<3; i++){
+                        console.log(pathObject[i].lat());
+                    }
+
                     for (var i=0; i<pathObject.length; i++){
                         path.push([pathObject[i].lat(), pathObject[i].lng()])
                     }
@@ -136,12 +135,11 @@ function getElevation(path, _callback){
     map.getElevations({
         locations: path,
         callback : function(results, status){
-            if (status == "OK") {
-                _callback(results);
-            } else {
-                alert("標高の取得に失敗しました。。。" + status)
-                    return;
+            if (status !== void 0 && status !== 'OK') {
+                alert("標高の取得に失敗しました。(Status: " + status +")");
+                return;
             }
+            _callback(results);
         }
     });
 };
@@ -151,7 +149,7 @@ function getElevation(path, _callback){
 //--------------------------------------
 function plotElevation(gmap_results){
     console.log("plotElevation()");
-    console.log(gmap_results);
+    $("#graph").empty();
 
     //描画フォーマットに合わせた標高の配列をつくる
     var x_data = [];
@@ -160,27 +158,48 @@ function plotElevation(gmap_results){
         x_data.push(i);
         elevations.push(gmap_results[i]["elevation"]);
     }
-    console.log(x_data);
-    console.log(elevations);
+    console.info("plot_data_num: " + x_data.length);
     route1 = {
-        type: 'scatter',
+        type: "scatter",
         x: x_data,
         y: elevations,
-        mode: 'lines',
+        mode:"markers+lines",
+        marker:{size:1},
         line: {
-            color: 'green',
+            color: "green",
             width: 1.5
-        },
+        }
     };
 
     //描画
     var data = [route1];
     var layout = {
-        xaxis: {title: "位置 (出発地から目的地)"},
-        yaxis: {title: "標高 [m]"},
+        hovermode:'closest',
+        xaxis: {zeroline: false, title: "位置 (出発地から目的地)"},
+        yaxis: {zeroline: false, title: "標高 [m]"},
         margin: { l: 40, b: 40, r:10, t:10 }
     };
     Plotly.newPlot($("#graph")[0], data, layout);
+    
+    //マウスオーバー処理
+    //  var chartDiv = document.getElementById('chart-div');
+    //  chartDiv.on('plotly_hover', function(data){
+    //との違い よくわからない
+    var points, pointNum, latlng;
+    $("#graph")[0].on("plotly_hover", function(e){
+        var points = e.points[0];
+        var pointNum = points.pointNumber;
+        var latlng = gmap_results[pointNum].location;
+        map.addMarker({
+            lat: latlng.lat(),
+            lng: latlng.lng()
+        });
+    }).on("plotly_unhover", function(){
+        map.removeMarkers();
+        //    lat: latlng.lat(),
+        //    lng: latlng.lng()
+        //});
+    });
 }
 
 //-----------------------------------------------
@@ -188,8 +207,10 @@ function plotElevation(gmap_results){
 // # 検索ボタンが押された時に走る
 //-----------------------------------------------
 function main(){
+    console.log("----------------------------------------");
     console.log("main()");
-
+    
+    $("#graph").css("border", "none");
     //出発地,目的地の名前を取得
     origin = {
         "place" : $("#origin").val(),
@@ -205,7 +226,6 @@ function main(){
         alert('出発地または目的地が入力されていません');
         return;
     }
-    console.log("org: ", origin["place"], "dest: ", destination["place"]);
     map.removeMarkers();
     map.cleanRoute();
 
