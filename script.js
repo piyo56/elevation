@@ -7,8 +7,9 @@
 
 //window.addEventListener("load", init(), false);
 $(waitForEvent);
+
 function waitForEvent(){
-    //test
+    //[test]
     //var tmp_data = [{"elevation":10}, {"elevation":20}, {"elevation":30}];
     //plotElevation(tmp_data);
     //return;
@@ -179,7 +180,7 @@ function plotElevation(gmap_results){
         yaxis: {title: "標高 [m]"},
         margin: { l: 40, b: 40, r:10, t:10 }
     };
-    Plotly.plot($("#graph")[0], data, layout);
+    Plotly.newPlot($("#graph")[0], data, layout);
 }
 
 //-----------------------------------------------
@@ -191,11 +192,13 @@ function main(){
 
     //出発地,目的地の名前を取得
     origin = {
-        "place" : $(origin).val(),
+        "place" : $("#origin").val(),
         "latlng" : []
     };
+    console.log("main()");
+
     destination = {
-        "place" : $(destination).val(),
+        "place" : $("#destination").val(),
         "latlng" : []
     };
     if(origin["place"] === '' || destination["place"] === ''){
