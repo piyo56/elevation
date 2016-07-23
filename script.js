@@ -5,6 +5,35 @@
    destination : 目的地の情報
 */
 
+//window.addEventListener("load", init(), false);
+$(waitForEvent);
+function waitForEvent(){
+    init();
+    //$(ターゲット).click()でなく$(document).on()をうまくいく
+    $(document).on("click", "#search_button",  function(){
+        main();
+    });
+};
+//-----------------------------------------------
+// 初期化関数
+// # ウィンドウがロードされた時に走る
+//-----------------------------------------------
+function init(){
+    console.log("init()");
+    map = new GMaps({
+        div: "#map",
+        lat: 35.681382,
+        lng: 139.766084,
+        zoom: 15
+    });
+
+    map.addMarker({
+        lat: 35.681382,
+        lng: 139.766084,
+        title: "東京駅"
+    });
+};
+
 //--------------------------------------
 // 場所名(または住所)から座標に変換
 //--------------------------------------
@@ -68,14 +97,14 @@ function getRoute(_callback){
 //--------------------------------------
 function drawRoute(){
     console.log("drawRoute()")
-        map.drawRoute({
-            origin: origin["latlng"],
-            destination: destination["latlng"],
-            travelMode: 'walking',
-            strokeColor: '#228b22',
-            strokeOpacity: 0.6,
-            strokeWeight: 6
-        });
+    map.drawRoute({
+        origin: origin["latlng"],
+        destination: destination["latlng"],
+        travelMode: 'walking',
+        strokeColor: '#228b22',
+        strokeOpacity: 0.6,
+        strokeWeight: 6
+    });
     map.addMarker({
         lat: origin["latlng"][0],
         lng: origin["latlng"][1],
@@ -89,9 +118,7 @@ function drawRoute(){
     var newCenterLat = (destination["latlng"][0] - origin["latlng"][0]) / 2 + origin["latlng"][0];
     var newCenterLng = (destination["latlng"][1] - origin["latlng"][1]) / 2 + origin["latlng"][1];
     map.setCenter({
-        lat: newCenterLat,
-        lng: newCenterLng
-            //callback: 
+        lat: newCenterLat, lng: newCenterLng
     });
     map.fitZoom();
 };
@@ -109,19 +136,18 @@ function getElevation(path, _callback){
                 //console.log("results of getElevation() : ", results)
                 elevations.push({"place":origin["place"],
                     "value":results[0].elevation});
-                for (var i=1 ; i<results.length-1 ; i++){
-                    elevations.push({"place":" ",
-                        "value":results[i].elevation});
-                    //elevations.push({"coordinate":i,
-                    //				 "value":results[i].elevation});
-                    //map.addMarker({
-                    //	lat: results[i].location.lat(),
-                    //	lng: results[i].location.lng(),
-                    //	title: String(results[i].elevation)
-                    //});
-                }
-                elevations.push({"place":destination["place"],
-                    "value":results[i].elevation});
+                //for (var i=1 ; i<results.length-1 ; i++){
+                //    elevations.push({"place":" ","value":results[i].elevation});
+                //    //elevations.push({"coordinate":i,
+                //    //				 "value":results[i].elevation});
+                //    //map.addMarker({
+                //    //	lat: results[i].location.lat(),
+                //    //	lng: results[i].location.lng(),
+                //    //	title: String(results[i].elevation)
+                //    //});
+                //}
+                elevations.push({"place": destination["place"],
+                                 "value": results[i].elevation});
                 _callback(elevations);
             } else {
                 alert("標高の取得に失敗しました。。。" + status)
@@ -136,42 +162,8 @@ function getElevation(path, _callback){
 //--------------------------------------
 function plotElevation(elevations){
     console.log("plotElevation()");
-    document.getElementById("graph").style.border = "none";
-    //console.log(elevations.length);
-    //console.log(elevations);
-    //	var chart = c3.generate({
-    //		bindto: '#graph',
-    //			data: {
-    //				columns: [
-    //					["elevation"].concat(elevations)
-    //				]
-    //			}
-    //	});
-    AmCharts.makeChart("graph", {
-        //"type": "serial",
-        "theme": "light",
-        "type": "serial",
-        "dataProvider": elevations,
-        "categoryField":"coordinate",
-        "valueAxes": [{
-            "position": "left",
-            "title": "elevation [m]",
-        }],
-        "categoryAxis": [{
-            "position": "bottom",
-            "title": origin["place"]+" <------------------> "+destination["place"],
-            "axisAlpha": 0,
-            "gridAlpha": 0.1,
-            "labelsEnabled": false
-        }],
-        "graphs": [{
-            "id": "g1",
-            "fillAlphas": 0.4,
-            "valueField": "value",
-            "balloonText": "<div style='margin:5px; font-size:19px;'>Visits:<b>[[value]]</b></div>"
-        }]
-    });
 }
+
 //-----------------------------------------------
 // メイン関数
 // # 検索ボタンが押された時に走る
@@ -181,11 +173,11 @@ function main(){
 
     //出発地,目的地の名前を取得
     origin = {
-        "place" : document.getElementById('origin').value,
+        "place" : $(origin).val(),
         "latlng" : []
     };
     destination = {
-        "place" : document.getElementById('destination').value,
+        "place" : $(destination).val(),
         "latlng" : []
     };
     if(origin["place"] === '' || destination["place"] === ''){
@@ -204,25 +196,3 @@ function main(){
         });
     });
 };
-
-//-----------------------------------------------
-// 初期化関数
-// # ウィンドウがロードされた時に走る
-//-----------------------------------------------
-function init(){
-    console.log("init()");
-    map = new GMaps({
-        div: "#map",
-        lat: 35.681382,
-        lng: 139.766084,
-        zoom: 15
-    });
-
-    map.addMarker({
-        lat: 35.681382,
-        lng: 139.766084,
-        title: "東京駅"
-    });
-};
-
-window.addEventListener("load", init(), false);
