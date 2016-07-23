@@ -2,7 +2,7 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
-        <title>Show elvation along the route</title>
+        <title>ルートに沿った標高の可視化</title>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
@@ -12,12 +12,13 @@
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <script src="./script.js"></script>
 
-        <div id="title_area"></div>
+        <div id="title_area"><h3>ルートに沿った標高の可視化 with GMaps.js</h3></div>
         <div id="print_area">
             <div id="map"></div>
             <div id="graph"></div>
         </div>
         <div id="input_area">
+            <div id="sub_wrapper">
             出発地点
             <input type="text", id="origin", value="東京駅", size="30", maxlength="60">
             <br>
@@ -25,6 +26,7 @@
             <input type="text", id="destination", value="新宿駅", size="30", maxlength="60">
             <br>
             <button id="search_button">高低差を検索</button>
+        </div>
         </div>
         <div class="align_clear"></div>
 

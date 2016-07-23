@@ -42,8 +42,11 @@ body{
 
 button {
     width : 70%;
-    height: 20px;
+    height: 30px;
     margin: 20px auto;
+}
+#sub_wrapper {
+    margin: auto 10px;
 }
 
 #map {
