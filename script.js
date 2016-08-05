@@ -30,28 +30,28 @@ function init(){
         lng: 139.766084,
         title: "東京駅"
     });
-};
+}
 
 //--------------------------------------
 // 場所名(または住所)から座標に変換
 //--------------------------------------
 function geocode(place, _callback){
-    console.log("geocode()")
-        GMaps.geocode({
-            region: "jp",
-            address: place,
-            callback: function(results, status) {
-                if (status !== void 0 && status !== 'OK') {
-                    alert(place + "の住所が取得できませんでした. Status =>" + status +")");
-                }
-                var latlng = results[0].geometry.location;
-                var lat = latlng.lat();
-                var lng = latlng.lng();
-                //console.log("local variable");
-                //console.log([lat, lng]);
-                _callback([lat, lng]);
+    console.log("geocode()");
+    GMaps.geocode({
+        region: "jp",
+        address: place,
+        callback: function(results, status) {
+            if (status !== void 0 && status !== 'OK') {
+                swal("申し訳ありません", place + "の住所が取得できませんでした. \n(Google Maps API error! Status =>" + status +")", "error");
             }
-        });
+            var latlng = results[0].geometry.location;
+            var lat = latlng.lat();
+            var lng = latlng.lng();
+            //console.log("local variable");
+            //console.log([lat, lng]);
+            _callback([lat, lng]);
+        }
+    });
 }
 
 //--------------------------------------
@@ -71,7 +71,7 @@ function getRoute(_callback){
                 destination: destination["latlng"],
                 callback: function(results, status){
                     if (status !== void 0 && status !== 'OK') {
-                        alert("ルートの取得に失敗しました。(Status:" + status + ")");
+                        swal("申し訳ありません","ルートの取得に失敗しました。\n(Google Maps API error! Status:" + status + ")","error");
                         return;
                     }
                     console.log(results);
@@ -87,20 +87,20 @@ function getRoute(_callback){
                     }
 
                     for (var i=0; i<pathObject.length; i++){
-                        path.push([pathObject[i].lat(), pathObject[i].lng()])
+                        path.push([pathObject[i].lat(), pathObject[i].lng()]);
                     }
                     _callback(path);
                 }
-            })
+            });
         });
     });
-};
+}
 
 //--------------------------------------
 // 出発地から目的地までのルートを描画する
 //--------------------------------------
 function drawRoute(){
-    console.log("drawRoute()")
+    console.log("drawRoute()");
     map.drawRoute({
         origin: origin["latlng"],
         destination: destination["latlng"],
@@ -125,7 +125,7 @@ function drawRoute(){
         lat: newCenterLat, lng: newCenterLng
     });
     map.fitZoom();
-};
+}
 
 //--------------------------------------
 // 出発地から目的地までの標高を取得する
@@ -136,13 +136,13 @@ function getElevation(path, _callback){
         locations: path,
         callback : function(results, status){
             if (status !== void 0 && status !== 'OK') {
-                alert("標高の取得に失敗しました。(Status: " + status +")");
+                swal("申し訳ありません", "標高の取得に失敗しました。\n(Google Maps API error! Status: " + status +")", "error");
                 return;
             }
             _callback(results);
         }
     });
-};
+}
 
 //--------------------------------------
 // ルートに沿った標高を描画する
@@ -154,7 +154,7 @@ function plotElevation(gmap_results){
     //描画フォーマットに合わせた標高の配列をつくる
     var x_data = [];
     var elevations = [];
-    for (var i=0 ; i<gmap_results.length; i++){
+    for (var i=0; i<gmap_results.length; i++){
         x_data.push(i);
         elevations.push(gmap_results[i]["elevation"]);
     }
@@ -211,9 +211,6 @@ function plotElevation(gmap_results){
         });
     }).on("plotly_unhover", function(){
         map.removeMarkers();
-        //    lat: latlng.lat(),
-        //    lng: latlng.lng()
-        //});
     });
 }
 
@@ -238,7 +235,7 @@ function main(){
         "latlng" : []
     };
     if(origin["place"] === '' || destination["place"] === ''){
-        alert('出発地または目的地が入力されていません');
+        swal('出発地または目的地が入力されていません',"warning");
         return;
     }
     map.removeMarkers();
@@ -251,4 +248,4 @@ function main(){
             plotElevation(elevations);
         });
     });
-};
+}
