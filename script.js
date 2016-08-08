@@ -147,16 +147,16 @@ function getElevation(path, _callback){
 //--------------------------------------
 // ルートに沿った標高を描画する
 //--------------------------------------
-function plotElevation(gmap_results){
+function plotElevation(api_results){
     console.log("plotElevation()");
     $("#graph").empty();
 
     //描画フォーマットに合わせた標高の配列をつくる
     var x_data = [];
     var elevations = [];
-    for (var i=0; i<gmap_results.length; i++){
+    for (var i=0; i<api_results.length; i++){
         x_data.push(i);
-        elevations.push(gmap_results[i]["elevation"]);
+        elevations.push(api_results[i]["elevation"]);
     }
     console.info("plot_data_num: " + x_data.length);
     route1 = {
@@ -200,11 +200,12 @@ function plotElevation(gmap_results){
     //  var chartDiv = document.getElementById('chart-div');
     //  chartDiv.on('plotly_hover', function(data){
     //との違い よくわからない
-    var points, pointNum, latlng;
     $("#graph")[0].on("plotly_hover", function(e){
+        console.info("hover_envent: ", e);
         var points = e.points[0];
         var pointNum = points.pointNumber;
-        var latlng = gmap_results[pointNum].location;
+        var latlng = api_results[pointNum].location;
+        console.info(e);
         map.addMarker({
             lat: latlng.lat(),
             lng: latlng.lng()
