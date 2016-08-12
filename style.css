@@ -60,7 +60,7 @@ body{
 
 #info_div {
     width: 80%;
-    height: -webkit-calc(100% - 77px - 180px - 20px);
+    height: calc(100% - 77px - 180px - 20px);
     margin: 20px auto;
 }
 #info_div  fieldset{
@@ -70,18 +70,18 @@ body{
 
 #main {
     width: 900px;
-    width: -webkit-calc(100% - 350px);
+    width: calc(100% - 350px);
     height: 100%;
-    height: -webkit-calc(100% - 80px);
+    height: calc(100% - 80px);
     float: left;
     margin: 0 auto;
 }
 
 #map {
     width: 100%;
-    width: -webkit-calc(100% - 2px);
+    width: calc(100% - 2px);
     height: 60%;
-    height: -webkit-calc(60% - 22px);
+    height: calc(60% - 22px);
     margin: 0 auto;
     background: #ffffff;
     border: 1px solid; 
@@ -89,9 +89,9 @@ body{
 
 #graph {
     width: 100%;
-    width: -webkit-calc(100% - 2px);
+    width: calc(100% - 2px);
     height: 40%;
-    height: -webkit-calc(40% - 2px);
+    height: calc(40% - 2px);
     margin: 20px auto 0 auto;
     border: thin dashed #000000;
     border: 1px solid; 
